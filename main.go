@@ -13,7 +13,6 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
 	_ "github.com/lib/pq"
-	"github.com/russross/blackfriday"
 )
 
 func repeatHandler(r int) gin.HandlerFunc {
@@ -89,7 +88,7 @@ func main() {
     })
 
     router.GET("/mark", func(c *gin.Context) {
-        c.String(http.StatusOK, string(blackfriday.Run([]byte("**hi!**"))))
+        //c.String(http.StatusOK, string(blackfriday.Run([]byte("**hi!**"))))
     })
 
     router.GET("/repeat", repeatHandler(repeat))
