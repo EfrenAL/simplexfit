@@ -12,6 +12,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
+
+	"github.com/russross/blackfriday"
 )
 
 
@@ -25,24 +27,25 @@ func repeatHandler(r int) gin.HandlerFunc {
     }
 }
 
+
 func dbFunc(db *sql.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
-        if _, err := db.Exec("CREATE TABLE IF NOT EXISTS exercises (name varchar(255))"); err != nil {
+        if _, err := db.Exec("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)"); err != nil {
             c.String(http.StatusInternalServerError,
                 fmt.Sprintf("Error creating database table: %q", err))
             return
         }
 
-        if _, err := db.Exec("INSERT INTO exercises VALUES (burpees, running)"); err != nil {
+        if _, err := db.Exec("INSERT INTO ticks VALUES (now())"); err != nil {
             c.String(http.StatusInternalServerError,
                 fmt.Sprintf("Error incrementing tick: %q", err))
             return
         }
 
-        rows, err := db.Query("SELECT name FROM exercises")
+        rows, err := db.Query("SELECT tick FROM ticks")
         if err != nil {
             c.String(http.StatusInternalServerError,
-                fmt.Sprintf("Error reading exercises: %q", err))
+                fmt.Sprintf("Error reading ticks: %q", err))
             return
         }
 
@@ -51,14 +54,13 @@ func dbFunc(db *sql.DB) gin.HandlerFunc {
             var tick time.Time
             if err := rows.Scan(&tick); err != nil {
                 c.String(http.StatusInternalServerError,
-                    fmt.Sprintf("Error scanning exercises: %q", err))
+                    fmt.Sprintf("Error scanning ticks: %q", err))
                 return
             }
             c.String(http.StatusOK, fmt.Sprintf("Read from DB: %s\n", tick.String()))
         }
     }
 }
-
 
 
 
@@ -95,7 +97,7 @@ func main() {
 	})
 
 	router.GET("/mark", func(c *gin.Context) {
-        //c.String(http.StatusOK, string(blackfriday.Run([]byte("**hi!**"))))
+        c.String(http.StatusOK, string(blackfriday.Run([]byte("**hi!**"))))
     })
 
 	router.GET("/repeat", repeatHandler(repeat))
