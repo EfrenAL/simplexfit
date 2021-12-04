@@ -12,10 +12,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
-
+	_ "github.com/lib/pq"
 	"github.com/russross/blackfriday"
 )
-
 
 func repeatHandler(r int) gin.HandlerFunc {
     return func(c *gin.Context) {
@@ -26,7 +25,6 @@ func repeatHandler(r int) gin.HandlerFunc {
         c.String(http.StatusOK, buffer.String())
     }
 }
-
 
 func dbFunc(db *sql.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
@@ -62,17 +60,14 @@ func dbFunc(db *sql.DB) gin.HandlerFunc {
     }
 }
 
-
-
-
 func main() {
-	port := os.Getenv("PORT")
+    port := os.Getenv("PORT")
 
-	if port == "" {
-		log.Fatal("$PORT must be set")
-	}
+    if port == "" {
+        log.Fatal("$PORT must be set")
+    }
 
-	tStr := os.Getenv("REPEAT")
+    tStr := os.Getenv("REPEAT")
     repeat, err := strconv.Atoi(tStr)
     if err != nil {
         log.Printf("Error converting $REPEAT to an int: %q - Using default\n", err)
@@ -84,25 +79,22 @@ func main() {
         log.Fatalf("Error opening database: %q", err)
     }
 
+    router := gin.New()
+    router.Use(gin.Logger())
+    router.LoadHTMLGlob("templates/*.tmpl.html")
+    router.Static("/static", "static")
 
+    router.GET("/", func(c *gin.Context) {
+        c.HTML(http.StatusOK, "index.tmpl.html", nil)
+    })
 
-
-	router := gin.New()
-	router.Use(gin.Logger())
-	router.LoadHTMLGlob("templates/*.tmpl.html")
-	router.Static("/static", "static")
-
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl.html", nil)
-	})
-
-	router.GET("/mark", func(c *gin.Context) {
+    router.GET("/mark", func(c *gin.Context) {
         c.String(http.StatusOK, string(blackfriday.Run([]byte("**hi!**"))))
     })
 
-	router.GET("/repeat", repeatHandler(repeat))
+    router.GET("/repeat", repeatHandler(repeat))
 
     router.GET("/db", dbFunc(db))
 
-	router.Run(":" + port)
+    router.Run(":" + port)
 }
