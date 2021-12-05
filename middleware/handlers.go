@@ -41,7 +41,7 @@ func createConnection() *sql.DB {
 
 
 // GetAllUser will return all the users
-func GetAllUser(w http.ResponseWriter, r *http.Request) {
+func GetAllExercises(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
     w.Header().Set("Access-Control-Allow-Origin", "*")
     // get all the users in the db
