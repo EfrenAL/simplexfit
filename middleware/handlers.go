@@ -3,19 +3,12 @@ package middleware
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/heroku/go-getting-started/models"
 )
-
-// response format
-type response struct {
-    ID      int64  `json:"id,omitempty"`
-    Message string `json:"message,omitempty"`
-}
 
 const (
 	queryCreateTable = "CREATE TABLE exercise (exerciseId SERIAL PRIMARY KEY, name TEXT, repetitions INT, time INT, complexity TEXT);"
@@ -36,11 +29,11 @@ func createConnection() *sql.DB {
     }
 
 	if _, err := db.Exec("%s", queryCreateTable); err != nil {
-		fmt.Sprintf("Error creating database table: %q", err)
+		log.Fatalf("Error creating database table: %q", err)
 	}
 
 	if _, err := db.Exec(`insert into "exercise"("exerciseId", "name", "repetitions","time", "complexity") values(1, 'Burpees', 5, 2, "high" )`); err != nil {		
-		fmt.Sprintf("Error incrementing tick: %q", err)	
+		log.Fatalf("Error incrementing tick: %q", err)	
 	}
 
     return db
