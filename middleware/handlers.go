@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -45,8 +46,24 @@ func createConnection() *sql.DB {
     return db
 }
 
+
+// GetAllUser will return all the users
+func GetAllUser(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+    w.Header().Set("Access-Control-Allow-Origin", "*")
+    // get all the users in the db
+    users, err := getAllExercises()
+
+    if err != nil {
+        log.Fatalf("Unable to get all user. %v", err)
+    }
+
+    // send all the users as response
+    json.NewEncoder(w).Encode(users)
+}
+
 // get one user from the DB by its userid
-func GetAllExercises(w http.ResponseWriter, r *http.Request) {
+func getAllExercises() ([]models.Exercise, error) {
     // create the postgres db connection
     db := createConnection()
 
