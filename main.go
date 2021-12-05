@@ -1,33 +1,23 @@
 package main
 
 import (
-	"bytes"
+	"github.com/heroku/go-getting-started/router"
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"strconv"
 	"time"
-
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
 	_ "github.com/lib/pq"
 )
 
-func repeatHandler(r int) gin.HandlerFunc {
-    return func(c *gin.Context) {
-        var buffer bytes.Buffer
-        for i := 0; i < r; i++ {
-            buffer.WriteString("Hello from Go!\n")
-        }
-        c.String(http.StatusOK, buffer.String())
-    }
-}
 
-func dbFunc(db *sql.DB) gin.HandlerFunc {
+
+
+func setupDB(db *sql.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
-        if _, err := db.Exec("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)"); err != nil {
+        if _, err := db.Exec("%s", queryCreateTable); err != nil {
             c.String(http.StatusInternalServerError,
                 fmt.Sprintf("Error creating database table: %q", err))
             return
@@ -59,41 +49,11 @@ func dbFunc(db *sql.DB) gin.HandlerFunc {
     }
 }
 
+
 func main() {
-    port := os.Getenv("PORT")
+    
+	r := router.Router()
+    fmt.Println("Starting server on the port 8080...")
+    log.Fatal(http.ListenAndServe(":8080", r))
 
-    if port == "" {
-        log.Fatal("$PORT must be set")
-    }
-
-    tStr := os.Getenv("REPEAT")
-    repeat, err := strconv.Atoi(tStr)
-    if err != nil {
-        log.Printf("Error converting $REPEAT to an int: %q - Using default\n", err)
-        repeat = 5
-    }
-
-    db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
-    if err != nil {
-        log.Fatalf("Error opening database: %q", err)
-    }
-
-    router := gin.New()
-    router.Use(gin.Logger())
-    router.LoadHTMLGlob("templates/*.tmpl.html")
-    router.Static("/static", "static")
-
-    router.GET("/", func(c *gin.Context) {
-        c.HTML(http.StatusOK, "index.tmpl.html", nil)
-    })
-
-    router.GET("/mark", func(c *gin.Context) {
-        //c.String(http.StatusOK, string(blackfriday.Run([]byte("**hi!**"))))
-    })
-
-    router.GET("/repeat", repeatHandler(repeat))
-
-    router.GET("/db", dbFunc(db))
-
-    router.Run(":" + port)
 }
