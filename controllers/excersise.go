@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg/v9"
 	orm "github.com/go-pg/pg/v9/orm"
-	guuid "github.com/google/uuid@v1.3.0"
+	guuid "github.com/google/uuid"
 )
 
 
@@ -71,7 +71,7 @@ func CreateExercise(c *gin.Context) {
 	repetitions := exercise.Repetitions
 	duration := exercise.Duration
 	complexity := exercise.Complexity
-	id := guuid.New().String
+	id := guuid.New().String()
 
 	insertError := dbConnect.Insert(&Exercise{
 		ID: id,
