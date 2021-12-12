@@ -10,6 +10,8 @@ func Router() *mux.Router {
 
     router := mux.NewRouter()
 	router.HandleFunc("/api/exercises", middleware.GetAllExercises).Methods("GET", "OPTIONS")
+	router.HandleFunc("/", middleware.GetAllExercises).Methods("GET", "OPTIONS")
+
     
     return router
 }

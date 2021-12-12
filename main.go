@@ -1,21 +1,25 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"fmt"
+	"log"
+	"net/http"
+
 	_ "github.com/heroku/x/hmetrics/onload"
 
+	"github.com/heroku/go-getting-started/router"
 	_ "github.com/heroku/x/hmetrics/onload"
 	_ "github.com/lib/pq"
 )
 
 func main() {
     
-	//r := router.Router()
-    //fmt.Println("Starting server on the port 8080...")
-    //log.Fatal(http.ListenAndServe(":8080", r))
+	r := router.Router()
+    fmt.Println("Starting server on the port 8080...")
+    log.Fatal(http.ListenAndServe(":8080", r))
 
-	router := gin.Default()
-	router.LoadHTMLGlob("templates/*")
+	//router := gin.Default()
+	//router.LoadHTMLGlob("templates/*")
 
 
 }
