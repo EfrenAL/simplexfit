@@ -45,6 +45,11 @@ func InitiateDB(db *pg.DB) {
 	dbConnect = db
 }
 
+func MainPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.tmpl.html", nil)
+}
+
+
 func GetAllExercise(c *gin.Context) {
 	var exercise []Exercise
 	err := dbConnect.Model(&exercise).Select()

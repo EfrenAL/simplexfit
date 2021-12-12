@@ -5,6 +5,7 @@ import (
 	"github.com/heroku/go-getting-started/controllers"
 )
 func Routes(router *gin.Engine) {
+	router.GET("/", controllers.MainPage)
 	router.GET("/exercise", controllers.GetAllExercise)
 	router.POST("/exercise", controllers.CreateExercise)
 	router.GET("/exercise/:exerciseId", controllers.GetSingleExercise)
@@ -12,6 +13,9 @@ func Routes(router *gin.Engine) {
 }
 
 /*
+
+c.HTML(http.StatusOK, "index.tmpl.html", nil)
+
 package router
 
 import (
