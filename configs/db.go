@@ -17,6 +17,8 @@ func Connect() *pg.DB {
 		panic(err)
 	}
 
+	log.Printf("ParsedUrl: %q", parsedUrl)
+
 	pgOptions := &pg.Options{
 		User: parsedUrl.User.Username(),
 		Database: parsedUrl.Path[1:],

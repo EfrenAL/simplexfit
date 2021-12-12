@@ -32,7 +32,7 @@ func CreateExerciseTable(db *pg.DB) error {
 	createError := db.CreateTable(&Exercise{}, opts)
 
 	if createError != nil {
-		log.Printf("Error while creating todo table, Reason: %v\n", createError)
+		log.Printf("Error while creating exercise table, Reason: %v\n", createError)
 		return createError
 	}
 	
