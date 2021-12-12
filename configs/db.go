@@ -37,7 +37,7 @@ func Connect() *pg.DB {
 	}
 	log.Printf("Connected to db")
 
-	controllers.CreateExerciseTable(db)
+	//controllers.CreateExerciseTable(db)
 	controllers.InitiateDB(db)
 
 
