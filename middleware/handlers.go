@@ -6,8 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/heroku/go-getting-started/models"
 )
 
 const (

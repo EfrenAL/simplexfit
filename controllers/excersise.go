@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg/v9"
 	orm "github.com/go-pg/pg/v9/orm"
-	guuid "github.com/google/uuid"
+	guuid "github.com/google/uuid@v1.3.0"
 )
 
 
@@ -16,7 +16,7 @@ type Exercise struct {
 	ID 				string  `json:"id"`
 	Name 			string `json:"name"`
 	Repetitions 	int64  `json:"repetitions"`
-	Time 			int64  `json:"time"`
+	Duration 		int64  `json:"time"`
 	Complexity 		string `json:"complexity"`
 	CreatedAt 		time.Time `json:"created_at"`
 	UpdatedAt 		time.Time `json:"updated_at"`
@@ -69,18 +69,18 @@ func CreateExercise(c *gin.Context) {
 
 	name := exercise.Name
 	repetitions := exercise.Repetitions
-	time := exercise.Time
+	duration := exercise.Duration
 	complexity := exercise.Complexity
-	id := guuid.New().String()
+	id := guuid.New().String
 
 	insertError := dbConnect.Insert(&Exercise{
-		ID:         id,
-		Name:       name,
-		Repetitions:      repetitions,
-		Time:     time,
-		Complexity:     complexity,
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
+		ID: id,
+		Name: name,
+		Repetitions: repetitions,
+		Duration: duration,
+		Complexity: complexity,
+		CreatedAt: time.Now(),
+		UpdatedAt:time.Now(),
 	})
 	if insertError != nil {
 		log.Printf("Error while inserting new todo into db, Reason: %v\n", insertError)
