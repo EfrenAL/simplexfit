@@ -2,7 +2,6 @@ package config
 
 import (
 	"log"
-	"net/url"
 	"os"
 
 	"github.com/go-pg/pg/v9"
@@ -12,30 +11,24 @@ import (
 // Connecting to db
 func Connect() *pg.DB {
 
-	parsedUrl, err := url.Parse(os.Getenv("DATABASE_URL"))
-	if err != nil {
-		panic(err)
+	// Connecting to db
+	opts := &pg.Options{
+		User: "wdeoibbwbhscjy",
+		Password: "6931402f0ef2741c19a6ed4d196a7ec27662c2233cce0d3f6d072c154609629d",
+		Addr: "postgres://wdeoibbwbhscjy:6931402f0ef2741c19a6ed4d196a7ec27662c2233cce0d3f6d072c154609629d@ec2-107-23-41-227.compute-1.amazonaws.com:5432/dg9keg1a0efbf",
+		Database: "dg9keg1a0efbf",
 	}
 
-	log.Printf("ParsedUrl: %q", parsedUrl)
-
-	pgOptions := &pg.Options{
-		User: parsedUrl.User.Username(),
-		Database: parsedUrl.Path[1:],
-		Addr: parsedUrl.Host,
-	}
-
-	if password, ok := parsedUrl.User.Password(); ok {
-		pgOptions.Password = password
-	}
-
-	db := pg.Connect(pgOptions)
-
+	var db *pg.DB = pg.Connect(opts)
 	if db == nil {
-		log.Printf("Failed to connect")
-		os.Exit(100)
+	log.Printf("Failed to connect")
+	os.Exit(100)
 	}
 	log.Printf("Connected to db")
+	
+	
+
+
 
 	controllers.CreateExerciseTable(db)
 	controllers.InitiateDB(db)
