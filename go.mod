@@ -4,7 +4,7 @@ module github.com/heroku/go-getting-started
 go 1.17
 
 require (
-	github.com/gin-gonic/gin v1.7.4
+	github.com/gin-gonic/gin v1.7.7
 	github.com/gorilla/mux v1.8.0
 	github.com/heroku/x v0.0.33
 	github.com/lib/pq v1.10.4
