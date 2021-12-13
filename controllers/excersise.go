@@ -1,14 +1,15 @@
 package controllers
 
 import (
+	"database/sql"
 	"log"
+	"math/rand"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-pg/pg/v9"
-	orm "github.com/go-pg/pg/v9/orm"
-	guuid "github.com/google/uuid"
+
+	"gorm.io/gorm"
 )
 
 
@@ -22,54 +23,79 @@ type Exercise struct {
 	UpdatedAt 		time.Time `json:"updated_at"`
 }
 
-var dbConnect *pg.DB
+var dbConnect *sql.DB
+var gormDBConnect *gorm.DB
 
+func InitiateDB(db *sql.DB, gormDB *gorm.DB ) {
+	dbConnect = db
+	gormDBConnect = gormDB
+}
 // Create User Table
-func CreateExerciseTable(db *pg.DB) error {
-	opts := &orm.CreateTableOptions{
-		IfNotExists: true,
-	}
-	createError := db.CreateTable(&Exercise{}, opts)
+func CreateExerciseTable() error {
 
-	if createError != nil {
-		log.Printf("Error while creating exercise table, Reason: %v\n", createError)
-		return createError
-	}
-	
-	log.Printf("Todo table created")
+	gormDBConnect.Migrator().CreateTable(&Exercise{})
+
+	log.Printf("Exercise table created")
 	return nil
 }
 
-
-func InitiateDB(db *pg.DB) {
-	dbConnect = db
-}
-
 func MainPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl.html", nil)
+	c.HTML(http.StatusOK, "index.tmpl.html", nil)	
 }
 
 
 func GetAllExercise(c *gin.Context) {
 	var exercise []Exercise
-	err := dbConnect.Model(&exercise).Select()
-	if err != nil {
-		log.Printf("Error while getting all exercises, Reason: %v\n", err)
+	
+	result := gormDBConnect.Find(&exercise)
+	
+
+	if result.Error != nil {
+		log.Printf("Error while getting all exercises, Reason: %v\n", result.Error)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  http.StatusInternalServerError,
 			"message": "Something went wrong",
 		})
 		return
 	}
+	message := "All Exercise %s" + string(result.RowsAffected)
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": "All Todos",
+		"message": message ,
 		"data": exercise,
 	})	
 }
 
 func CreateExercise(c *gin.Context) {
-	var exercise Exercise
+
+	result := gormDBConnect.Create(&Exercise{
+		ID: string(rand.Intn(100)),
+		Name: "Burpees",
+		Repetitions: 5,
+		Duration: 35,
+		Complexity: "Hard",
+		CreatedAt: time.Now(),
+		UpdatedAt:time.Now(),
+	})
+
+	if result.Error != nil {
+		log.Printf("Error while inserting new todo into db, Reason: %v\n", result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": "Something went wrong",
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  http.StatusCreated,
+		"message": "Excercise created Successfully",
+	})
+	return
+
+
+	/*var exercise Exercise
 	c.BindJSON(&exercise)
 
 	name := exercise.Name
@@ -99,11 +125,11 @@ func CreateExercise(c *gin.Context) {
 		"status":  http.StatusCreated,
 		"message": "Todo created Successfully",
 	})
-	return
+	return*/
 }
 
 func GetSingleExercise(c *gin.Context) {
-	exerciseId := c.Param("exerciseId")
+	/*exerciseId := c.Param("exerciseId")
 	exercise := &Exercise{ID: exerciseId}
 	err := dbConnect.Select(exercise)
 	if err != nil {
@@ -119,11 +145,11 @@ func GetSingleExercise(c *gin.Context) {
 		"message": "Single Todo",
 		"data": exercise,
 	})
-	return
+	return*/
 }
 
 func DeleteExercise(c *gin.Context) {
-	exerciseId := c.Param("exerciseId")
+	/*exerciseId := c.Param("exerciseId")
 	exercise := &Exercise{ID: exerciseId}
 	err := dbConnect.Delete(exercise)
 	if err != nil {
@@ -138,5 +164,5 @@ func DeleteExercise(c *gin.Context) {
 		"status":  http.StatusOK,
 		"message": "Todo deleted successfully",
 	})
-	return
+	return*/
 }

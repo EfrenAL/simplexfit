@@ -17,6 +17,9 @@ func main() {
 	config.Connect()
 	// Init Router
 	router := gin.Default()
+	router.LoadHTMLGlob("templates/*.tmpl.html")
+    router.Static("/static", "static")
+
 	// Route Handlers / Endpoints
 	routes.Routes(router)
 	log.Fatal(router.Run())

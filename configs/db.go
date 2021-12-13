@@ -1,35 +1,28 @@
 package config
 
 import (
+	"database/sql"
 	"log"
-	"net/url"
 	"os"
 
-	"github.com/go-pg/pg/v9"
 	"github.com/heroku/go-getting-started/controllers"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 // Connecting to db
-func Connect() *pg.DB {
+func Connect() *sql.DB {
 
-	parsedUrl, err := url.Parse(os.Getenv("DATABASE_URL"))
-	if err != nil { 
-		panic(err)
-	}
+	port := os.Getenv("PORT")
 
-	log.Printf("ParsedUrl: %q", parsedUrl)
+    if port == "" {
+        log.Fatal("$PORT must be set")
+    }
 
-	pgOptions := &pg.Options{
-		User: parsedUrl.User.Username(),
-		Database: parsedUrl.Path[1:],
-		Addr: parsedUrl.Host,
-	}
-
-	if password, ok := parsedUrl.User.Password(); ok {
-		pgOptions.Password = password
-	}
-
-	db := pg.Connect(pgOptions)
+    db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+    if err != nil {
+        log.Fatalf("Error opening database: %q", err)
+    }
 
 	if db == nil {
 		log.Printf("Failed to connect")
@@ -37,9 +30,18 @@ func Connect() *pg.DB {
 	}
 	log.Printf("Connected to db")
 
-	controllers.CreateExerciseTable(db)
-	controllers.InitiateDB(db)
+	gormDB, err := gorm.Open(postgres.New(postgres.Config{
+		Conn: db,
+	}), &gorm.Config{})
 
+	if err != nil {
+		log.Printf("Error while creating exercise table, Reason: %v\n", err)
+		os.Exit(100)
+	}
+	log.Printf("Connected to gormDB")
+
+	controllers.InitiateDB(db, gormDB)
+	controllers.CreateExerciseTable()
 
 	return db
 }
