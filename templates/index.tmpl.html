@@ -72,18 +72,16 @@
               the Dashboard or CLI.
             </li>
 
-            <form action="/action_page.php">
-              <label for="fname">First name:</label><br />
-              <input type="text" id="fname" name="fname" value="John" /><br />
-              <label for="lname">Last name:</label><br />
-              <input
-                type="text"
-                id="lname"
-                name="lname"
-                value="Doe"
-              /><br /><br />
-              <input type="submit" value="Submit" />
+            div>
+            <form method="POST" action="/form/exercise">     
+                <label>Name</label><input name="name" type="text" value="" />
+                <label>Complexity</label><input name="complexity" type="text" value="" />
+                <label>Repetitions</label><input name="repetitions" type="number" value="" />
+                <label>Duration</label><input name="duration" type="number" value="" />
+                <input type="submit" value="submit" />
             </form>
+          </div>
+
           </ul>
         </div>
         <div class="col-md-6">

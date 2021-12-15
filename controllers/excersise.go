@@ -3,12 +3,12 @@ package controllers
 import (
 	"database/sql"
 	"log"
-	"math/rand"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 
+	guuid "github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -69,12 +69,22 @@ func GetAllExercise(c *gin.Context) {
 
 func CreateExercise(c *gin.Context) {
 
+	var exercise Exercise
+
+	c.BindJSON(&exercise)
+
+	name := exercise.Name
+	repetitions := exercise.Repetitions
+	duration := exercise.Duration
+	complexity := exercise.Complexity
+	id := guuid.New().String()
+
 	result := gormDBConnect.Create(&Exercise{
-		ID: string(rand.Intn(100)),
-		Name: "Burpees",
-		Repetitions: 5,
-		Duration: 35,
-		Complexity: "Hard",
+		ID: id,
+		Name: name,
+		Repetitions: repetitions,
+		Duration: duration,
+		Complexity: complexity,
 		CreatedAt: time.Now(),
 		UpdatedAt:time.Now(),
 	})
@@ -92,68 +102,106 @@ func CreateExercise(c *gin.Context) {
 		"status":  http.StatusCreated,
 		"message": "Excercise created Successfully",
 	})
-	return
+}
 
+func CreateExerciseForm(c *gin.Context) {
 
-	/*var exercise Exercise
-	c.BindJSON(&exercise)
+	if err := c.Request.ParseForm(); err != nil {
+		log.Printf("ParseForm() err: %v", err)
+		return
+	}
 
-	name := exercise.Name
-	repetitions := exercise.Repetitions
-	duration := exercise.Duration
-	complexity := exercise.Complexity
+	name := c.Request.FormValue("name")
+	// To check how to parse int to string
+	//repetitions := c.Request.FormValue("repetitions")
+	//duration := c.Request.FormValue("duration")
+	complexity := c.Request.FormValue("complexity")
 	id := guuid.New().String()
 
-	insertError := dbConnect.Insert(&Exercise{
+	result := gormDBConnect.Create(&Exercise{
 		ID: id,
 		Name: name,
-		Repetitions: repetitions,
-		Duration: duration,
+		Repetitions: 100,
+		Duration: 40,
 		Complexity: complexity,
 		CreatedAt: time.Now(),
 		UpdatedAt:time.Now(),
 	})
-	if insertError != nil {
-		log.Printf("Error while inserting new todo into db, Reason: %v\n", insertError)
+
+	if result.Error != nil {
+		log.Printf("Error while inserting new todo into db, Reason: %v\n", result.Error)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  http.StatusInternalServerError,
 			"message": "Something went wrong",
 		})
 		return
 	}
+
 	c.JSON(http.StatusCreated, gin.H{
 		"status":  http.StatusCreated,
-		"message": "Todo created Successfully",
+		"message": "Excercise created Successfully",
 	})
-	return*/
+}
+
+
+
+func CreateExerciseBatch(c *gin.Context) {
+
+	var exercises []Exercise
+
+	c.BindJSON(&exercises)
+
+	for _, exercise := range exercises {
+		exercise.ID = guuid.New().String()
+	}
+
+
+	result := gormDBConnect.Create(exercises)
+
+	if result.Error != nil {
+		log.Printf("Error while inserting new todo into db, Reason: %v\n", result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": "Something went wrong",
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"status":  http.StatusCreated,
+		"message": "Excercise created Successfully",
+	})
 }
 
 func GetSingleExercise(c *gin.Context) {
-	/*exerciseId := c.Param("exerciseId")
+	exerciseId := c.Param("exerciseId")
 	exercise := &Exercise{ID: exerciseId}
-	err := dbConnect.Select(exercise)
-	if err != nil {
-		log.Printf("Error while getting a single todo, Reason: %v\n", err)
+
+	result := gormDBConnect.First(&exercise)
+	
+	if result.Error != nil {
+		log.Printf("Error while getting a single todo, Reason: %v\n", result.Error)
 		c.JSON(http.StatusNotFound, gin.H{
 			"status":  http.StatusNotFound,
-			"message": "Todo not found",
+			"message": "Exercise not found",
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": "Single Todo",
+		"message": "Single Exercise",
 		"data": exercise,
 	})
-	return*/
 }
 
 func DeleteExercise(c *gin.Context) {
-	/*exerciseId := c.Param("exerciseId")
+	exerciseId := c.Param("exerciseId")
 	exercise := &Exercise{ID: exerciseId}
-	err := dbConnect.Delete(exercise)
-	if err != nil {
-		log.Printf("Error while deleting a single todo, Reason: %v\n", err)
+
+	result := gormDBConnect.Delete(exercise)
+
+	if result.Error != nil {
+		log.Printf("Error while deleting a single exercise, Reason: %v\n", result.Error)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  http.StatusInternalServerError,
 			"message": "Something went wrong",
@@ -162,7 +210,24 @@ func DeleteExercise(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": "Todo deleted successfully",
+		"message": "Exercise deleted successfully",
 	})
-	return*/
+}
+
+func DeleteAllExercise(c *gin.Context) {
+	
+	result := gormDBConnect.Where("id LIKE ?", " ").Delete(Exercise{})
+
+	if result.Error != nil {
+		log.Printf("Error while deleting all exercise entries, Reason: %v\n", result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": "Something went wrong",
+		})
+	return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "All Exercises deleted successfully",
+	})
 }

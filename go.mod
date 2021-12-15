@@ -5,6 +5,7 @@ go 1.17
 
 require (
 	github.com/gin-gonic/gin v1.7.7
+	github.com/google/uuid v1.3.0
 	github.com/heroku/x v0.0.33
 	github.com/lib/pq v1.10.4
 	gorm.io/driver/postgres v1.2.3

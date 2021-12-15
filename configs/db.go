@@ -13,13 +13,18 @@ import (
 // Connecting to db
 func Connect() *sql.DB {
 
+	//Production env
+	conection := os.Getenv("DATABASE_URL")
 	port := os.Getenv("PORT")
+	//Local env
+	//conection := "user=efrenal dbname=postgres password=secure-password host=localhost sslmode=disable"	
+	//port := "8080"
 
     if port == "" {
         log.Fatal("$PORT must be set")
     }
 
-    db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+    db, err := sql.Open("postgres", conection)
     if err != nil {
         log.Fatalf("Error opening database: %q", err)
     }
