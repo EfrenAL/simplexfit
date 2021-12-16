@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	config "github.com/heroku/go-getting-started/configs"
-	routes "github.com/heroku/go-getting-started/router"
+	config "github.com/EfrenAL/SimpleXfit/configs"
+	routes "github.com/EfrenAL/SimpleXfit/router"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"

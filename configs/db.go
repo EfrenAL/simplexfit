@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/heroku/go-getting-started/controllers"
+	"github.com/EfrenAL/SimpleXfit/controllers"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

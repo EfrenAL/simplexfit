@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/heroku/go-getting-started/controllers"
+	"github.com/EfrenAL/SimpleXfit/controllers"
 )
 func Routes(router *gin.Engine) {
 	router.GET("/", controllers.MainPage)
