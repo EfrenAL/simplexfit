@@ -16,8 +16,6 @@ func Routes(router *gin.Engine) {
 	router.DELETE("/exercise/:exerciseId", controllers.DeleteExercise)
 	router.DELETE("/exercise/all", controllers.DeleteExercise)
 
-
-
 	router.GET("/workout", controllers.GetAllWorkout)
 	router.POST("/workout", controllers.CreateWorkout)
 }
