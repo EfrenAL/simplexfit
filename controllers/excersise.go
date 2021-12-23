@@ -1,39 +1,38 @@
 package controllers
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
-	"time"
+	"gorm.io/gorm"
+
+	
 
 	"github.com/gin-gonic/gin"
-
-	guuid "github.com/google/uuid"
-	"gorm.io/gorm"
 )
+
+//"gorm.io/gorm"
 
 
 type Exercise struct {
-	ID 				string  `json:"id"`
+	gorm.Model
 	Name 			string `json:"name"`
 	Repetitions 	int64  `json:"repetitions"`
-	Duration 		int64  `json:"time"`
+	Weight 			int64  `json:"weight"`
 	Complexity 		string `json:"complexity"`
-	CreatedAt 		time.Time `json:"created_at"`
-	UpdatedAt 		time.Time `json:"updated_at"`
 }
 
-var dbConnect *sql.DB
-var gormDBConnect *gorm.DB
-
-func InitiateDB(db *sql.DB, gormDB *gorm.DB ) {
-	dbConnect = db
-	gormDBConnect = gormDB
-}
 // Create User Table
 func CreateExerciseTable() error {
 
 	gormDBConnect.Migrator().CreateTable(&Exercise{})
+
+	Custs1 := Exercise{Name: "John",Repetitions: 10, Weight: 20, Complexity: "hard" } 
+	Custs2 := Exercise{Name: "John2",Repetitions: 10, Weight: 20, Complexity: "hard2" } 
+
+	gormDBConnect.Create(&Custs1)
+	gormDBConnect.Create(&Custs2)
+
+
 
 	log.Printf("Exercise table created")
 	return nil
@@ -75,18 +74,14 @@ func CreateExercise(c *gin.Context) {
 
 	name := exercise.Name
 	repetitions := exercise.Repetitions
-	duration := exercise.Duration
+	weight := exercise.Weight
 	complexity := exercise.Complexity
-	id := guuid.New().String()
 
-	result := gormDBConnect.Create(&Exercise{
-		ID: id,
+	result := gormDBConnect.Create(&Exercise{	
 		Name: name,
 		Repetitions: repetitions,
-		Duration: duration,
+		Weight: weight,
 		Complexity: complexity,
-		CreatedAt: time.Now(),
-		UpdatedAt:time.Now(),
 	})
 
 	if result.Error != nil {
@@ -116,16 +111,12 @@ func CreateExerciseForm(c *gin.Context) {
 	//repetitions := c.Request.FormValue("repetitions")
 	//duration := c.Request.FormValue("duration")
 	complexity := c.Request.FormValue("complexity")
-	id := guuid.New().String()
 
 	result := gormDBConnect.Create(&Exercise{
-		ID: id,
 		Name: name,
 		Repetitions: 100,
-		Duration: 40,
+		Weight: 40,
 		Complexity: complexity,
-		CreatedAt: time.Now(),
-		UpdatedAt:time.Now(),
 	})
 
 	if result.Error != nil {
@@ -151,11 +142,6 @@ func CreateExerciseBatch(c *gin.Context) {
 
 	c.BindJSON(&exercises)
 
-	for _, exercise := range exercises {
-		exercise.ID = guuid.New().String()
-	}
-
-
 	result := gormDBConnect.Create(exercises)
 
 	if result.Error != nil {
@@ -174,9 +160,10 @@ func CreateExerciseBatch(c *gin.Context) {
 }
 
 func GetSingleExercise(c *gin.Context) {
-	exerciseId := c.Param("exerciseId")
-	exercise := &Exercise{ID: exerciseId}
-
+	nameParm := c.Param("name")
+	
+	exercise := &Exercise{Name: nameParm}
+	
 	result := gormDBConnect.First(&exercise)
 	
 	if result.Error != nil {
@@ -195,8 +182,8 @@ func GetSingleExercise(c *gin.Context) {
 }
 
 func DeleteExercise(c *gin.Context) {
-	exerciseId := c.Param("exerciseId")
-	exercise := &Exercise{ID: exerciseId}
+	nameParam := c.Param("name")
+	exercise := &Exercise{Name: nameParam}
 
 	result := gormDBConnect.Delete(exercise)
 

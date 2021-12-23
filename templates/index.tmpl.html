@@ -8,24 +8,22 @@
         <a href="/" class="lang-logo">
           <img src="/static/lang-logo.png" />
         </a>
-        <h1>Getting Started with Go on Heroku</h1>
+        <h1>Getting Started with Simple X-Fit</h1>
         <p>
-          This is a sample Go application deployed to Heroku. It's a reasonably
-          simple app - but a good foundation for understanding how to get the
-          most out of the Heroku platform.
+          This is a GO application deployed to Heroku to serve and manage data
+          to the SimpleXfit app that you can find in apple store.
         </p>
         <a
           type="button"
           class="btn btn-lg btn-default"
           href="https://devcenter.heroku.com/articles/getting-started-with-go"
-          ><span class="glyphiconglyphicon-flash"></span> Getting Started with
-          Go</a
-        >
+          ><span class="glyphiconglyphicon-flash"></span> Apple store
+        </a>
         <a
           type="button"
           class="btn btn-lg btn-primary"
           href="https://github.com/heroku/go-getting-started"
-          ><span class="glyphiconglyphicon-download"></span> Source on GitHub</a
+          ><span class="glyphiconglyphicon-download"></span> Apple store</a
         >
       </div>
     </div>
@@ -67,21 +65,21 @@
               and executed.
             </li>
             <li>
-              You can scale your app, manage it, and deploy over
-              <a href="https://addons.heroku.com/">150 add-on services</a>, from
-              the Dashboard or CLI.
+              If you want to create a new exercise use the following form:
             </li>
 
-            div>
-            <form method="POST" action="/form/exercise">     
+            <div>
+              <form method="POST" action="/form/exercise">
                 <label>Name</label><input name="name" type="text" value="" />
-                <label>Complexity</label><input name="complexity" type="text" value="" />
-                <label>Repetitions</label><input name="repetitions" type="number" value="" />
-                <label>Duration</label><input name="duration" type="number" value="" />
+                <label>Complexity</label
+                ><input name="complexity" type="text" value="" />
+                <label>Repetitions</label
+                ><input name="repetitions" type="number" value="" />
+                <label>Duration</label
+                ><input name="duration" type="number" value="" />
                 <input type="submit" value="submit" />
-            </form>
-          </div>
-
+              </form>
+            </div>
           </ul>
         </div>
         <div class="col-md-6">
@@ -124,6 +122,17 @@
                 to Heroku
               </li>
             </ul>
+
+            <li>
+              If you want to see the eexsisting excersises click the follwing
+              button:
+            </li>
+
+            <div>
+              <form method="GET" action="/exercise">
+                <input type="submit" value="submit" />
+              </form>
+            </div>
           </ul>
           <h3><span class="glyphicon glyphicon-link"></span> Helpful Links</h3>
           <ul>

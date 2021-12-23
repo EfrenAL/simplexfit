@@ -58,8 +58,7 @@ func getAllExercises() ([]models.Exercise, error) {
     // create the postgres db connection
     db := createConnection()
 
-    // close the db connection
-    defer db.Close()
+    
 
     var exercises []models.Exercise
 

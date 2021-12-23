@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	config "github.com/EfrenAL/SimpleXfit/configs"
-	routes "github.com/EfrenAL/SimpleXfit/router"
+	config "github.com/EfrenAL/simplexfit/configs"
+	routes "github.com/EfrenAL/simplexfit/router"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"

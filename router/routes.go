@@ -1,8 +1,8 @@
 package routes
 
 import (
+	"github.com/EfrenAL/simplexfit/controllers"
 	"github.com/gin-gonic/gin"
-	"github.com/EfrenAL/SimpleXfit/controllers"
 )
 func Routes(router *gin.Engine) {
 	router.GET("/", controllers.MainPage)
@@ -15,4 +15,9 @@ func Routes(router *gin.Engine) {
 
 	router.DELETE("/exercise/:exerciseId", controllers.DeleteExercise)
 	router.DELETE("/exercise/all", controllers.DeleteExercise)
+
+
+
+	router.GET("/workout", controllers.GetAllWorkout)
+	router.POST("/workout", controllers.CreateWorkout)
 }
