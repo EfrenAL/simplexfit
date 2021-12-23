@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/EfrenAL/simplexfit/controllers"	
+	"github.com/EfrenAL/simplexfit/controllers"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
