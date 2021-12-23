@@ -14,11 +14,11 @@ import (
 func Connect() *sql.DB {
 
 	//Production env
-	//conection := os.Getenv("DATABASE_URL")
-	//port := os.Getenv("PORT")
+	conection := os.Getenv("DATABASE_URL")
+	port := os.Getenv("PORT")
 	//Local env
-	conection := "user=efrenal dbname=postgres password=secure-password host=localhost sslmode=disable"	
-	port := "8080"
+	//conection := "user=efrenal dbname=postgres password=secure-password host=localhost sslmode=disable"	
+	//port := "8080"
 
     if port == "" {
         log.Fatal("$PORT must be set")
