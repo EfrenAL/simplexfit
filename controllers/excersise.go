@@ -158,11 +158,9 @@ func CreateExerciseBatch(c *gin.Context) {
 }
 
 func GetSingleExercise(c *gin.Context) {
-	nameParm := c.Param("name")
-	
-	exercise := &Exercise{Name: nameParm}
-	
-	result := gormDBConnect.First(&exercise)
+	exerciseId := c.Param("exerciseId")
+	exercise := &Exercise{}
+	result := gormDBConnect.First(&exercise, exerciseId)
 	
 	if result.Error != nil {
 		log.Printf("Error while getting a single todo, Reason: %v\n", result.Error)
@@ -180,10 +178,10 @@ func GetSingleExercise(c *gin.Context) {
 }
 
 func DeleteExercise(c *gin.Context) {
-	nameParam := c.Param("name")
-	exercise := &Exercise{Name: nameParam}
+	exerciseId := c.Param("exerciseId")
+	exercise := &Exercise{}
 
-	result := gormDBConnect.Delete(exercise)
+	result := gormDBConnect.Delete(exercise, exerciseId)
 
 	if result.Error != nil {
 		log.Printf("Error while deleting a single exercise, Reason: %v\n", result.Error)

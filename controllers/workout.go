@@ -26,9 +26,9 @@ func CreateWorkoutTable() error {
 
 	//gormDBConnect.Migrator().CreateTable(&Workout{})
 
-	Custs1 := Workout{Name: "Martin", Exercises: []Exercise{
-		{Name: "Penny12",Repetitions: 10, Weight: 20, Complexity: "hard5" },
-		{Name: "Penny13",Repetitions: 10, Weight: 20, Complexity: "hard5" }},
+	Custs1 := Workout{Name: "WOD Xfit Amsterdam", Exercises: []Exercise{
+		{Name: "Flexiones",Repetitions: 10, Weight: 20, Complexity: "hard5" },
+		{Name: "Abs",Repetitions: 10, Weight: 20, Complexity: "hard5" }},
 	}
 	gormDBConnect.Create(&Custs1)
 
@@ -59,6 +59,29 @@ func GetAllWorkout(c *gin.Context) {
 		"data": workout,
 	})	
 }
+
+func GetSingleWorkout(c *gin.Context) {
+	workoutId := c.Param("workoutId")
+	exercise := &Workout{}
+	
+	result := gormDBConnect.First(&exercise, workoutId)
+	
+	if result.Error != nil {
+		log.Printf("Error while getting a single todo, Reason: %v\n", result.Error)
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  http.StatusNotFound,
+			"message": "Exercise not found",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "Single Exercise",
+		"data": exercise,
+	})
+}
+
+
 
 
 func CreateWorkout(c *gin.Context) {
