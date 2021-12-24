@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 	"time"
-	"gorm.io/gorm"
 
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +15,8 @@ type Workout struct {
 	gorm.Model
 	Name 			string `json:"name"`
 	Date 			time.Time  `json:"date"`
-	Excercises 		Exercise  `json:"excercises" gorm:"foreignKey:ExerciseID;references:ID"`	
+	//Excercises 		Exercise  `json:"excercises" gorm:"ForeignKey:ExerciseID;references:ID"`
+	Exercises 		[]Exercise  `json:"excercises" gorm:"many2many:workout_exercise;"`	
 	ExerciseID		uint		`json:"-"`
 }
 
@@ -23,9 +24,12 @@ type Workout struct {
 func CreateWorkoutTable() error {
 
 
-	gormDBConnect.Migrator().CreateTable(&Workout{})
+	//gormDBConnect.Migrator().CreateTable(&Workout{})
 
-	Custs1 := Workout{Name: "Martin", Excercises: Exercise{Name: "Penny2",Repetitions: 10, Weight: 20, Complexity: "hard5" }}
+	Custs1 := Workout{Name: "Martin", Exercises: []Exercise{
+		{Name: "Penny12",Repetitions: 10, Weight: 20, Complexity: "hard5" },
+		{Name: "Penny13",Repetitions: 10, Weight: 20, Complexity: "hard5" }},
+	}
 	gormDBConnect.Create(&Custs1)
 
 	//log.Printf("Workout table created, %s", result.Error())
@@ -37,8 +41,7 @@ func CreateWorkoutTable() error {
 func GetAllWorkout(c *gin.Context) {
 	var workout []Workout
 	
-	result := gormDBConnect.Find(&workout)
-	
+	result := gormDBConnect.Preload("Exercises").Find(&workout)									
 
 	if result.Error != nil {
 		log.Printf("Error while getting all workout, Reason: %v\n", result.Error)
@@ -66,12 +69,12 @@ func CreateWorkout(c *gin.Context) {
 
 	name := workout.Name
 	date := workout.Date
-	excercises := workout.Excercises	
+	excercises := workout.Exercises	
 
 	result := gormDBConnect.Create(&Workout{	
 		Name: name,
 		Date: date,
-		Excercises: excercises,		
+		Exercises: excercises,		
 	})
 
 	if result.Error != nil {

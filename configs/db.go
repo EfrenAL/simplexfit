@@ -19,11 +19,13 @@ func Connect() *sql.DB {
 
 	//Local env
 	//conection := "user=efrenal dbname=postgres password=secure-password host=localhost sslmode=disable"	
-	//port := "8080"
+	//
 
-	
     if port == "" {
-        log.Fatal("$PORT must be set")
+        //log.Fatal("$PORT must be set")
+		log.Printf("Running in local")
+		port = "8080"
+		conection = "user=efrenal dbname=postgres password=secure-password host=localhost sslmode=disable"	
     }
 
     db, err := sql.Open("postgres", conection)
@@ -48,6 +50,9 @@ func Connect() *sql.DB {
 	log.Printf("Connected to gormDB")
 
 	controllers.InitiateDB(db, gormDB)
+
+	controllers.CreateTables()
+
 	controllers.CreateExerciseTable()
 	controllers.CreateWorkoutTable()
 

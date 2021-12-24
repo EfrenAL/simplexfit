@@ -22,7 +22,7 @@ type Exercise struct {
 // Create User Table
 func CreateExerciseTable() error {
 
-	gormDBConnect.Migrator().CreateTable(&Exercise{})
+	//gormDBConnect.Migrator().CreateTable(&Exercise{})
 
 	Custs1 := Exercise{Name: "John",Repetitions: 10, Weight: 20, Complexity: "hard" } 
 	Custs2 := Exercise{Name: "John2",Repetitions: 10, Weight: 20, Complexity: "hard2" } 
