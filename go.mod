@@ -6,6 +6,7 @@ go 1.17
 require (
 	github.com/gin-gonic/gin v1.7.7
 	github.com/heroku/x v0.0.33
+	github.com/joho/godotenv v1.4.0
 	github.com/lib/pq v1.10.4
 	gorm.io/driver/postgres v1.2.3
 	gorm.io/gorm v1.22.4

@@ -5,6 +5,7 @@ import (
 
 	config "github.com/EfrenAL/simplexfit/configs"
 	routes "github.com/EfrenAL/simplexfit/router"
+	"github.com/joho/godotenv"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
@@ -13,7 +14,9 @@ import (
 
 func main() {
     
-	
+
+	godotenv.Load()
+
 	config.Connect()
 	
 	router := gin.Default()
