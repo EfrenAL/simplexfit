@@ -53,8 +53,8 @@ func Connect() *sql.DB {
 
 	controllers.CreateTables()
 
-	controllers.CreateExerciseTable()
-	controllers.CreateWorkoutTable()
+	controllers.PopulateExerciseTable()
+	controllers.PopulateWorkoutTable()
 
 	return db
 }

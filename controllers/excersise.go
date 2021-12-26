@@ -20,7 +20,7 @@ type Exercise struct {
 }
 
 // Create User Table
-func CreateExerciseTable() error {
+func PopulateExerciseTable() error {
 
 	//gormDBConnect.Migrator().CreateTable(&Exercise{})
 
