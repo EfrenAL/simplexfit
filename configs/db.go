@@ -17,12 +17,7 @@ func Connect() *sql.DB {
 	conection := os.Getenv("DATABASE_URL")
 	port := os.Getenv("PORT")
 
-	//Local env
-	//conection := "user=efrenal dbname=postgres password=secure-password host=localhost sslmode=disable"	
-	//
-
     if port == "" {
-        //log.Fatal("$PORT must be set")
 		log.Printf("Running in local")
 		port = "8080"
 		conection = "user=efrenal dbname=postgres password=secure-password host=localhost sslmode=disable"	

@@ -17,14 +17,11 @@ type Workout struct {
 	Date 			time.Time  `json:"date"`
 	//Excercises 		Exercise  `json:"excercises" gorm:"ForeignKey:ExerciseID;references:ID"`
 	Exercises 		[]Exercise  `json:"excercises" gorm:"many2many:workout_exercise;"`	
-	ExerciseID		uint		`json:"-"`
+	ExerciseID		uint		`json:"-"`	
 }
 
 // Create User Table
-func CreateWorkoutTable() error {
-
-
-	//gormDBConnect.Migrator().CreateTable(&Workout{})
+func PopulateWorkoutTable() error {
 
 	Custs1 := Workout{Name: "WOD Xfit Amsterdam", Exercises: []Exercise{
 		{Name: "Flexiones",Repetitions: 10, Weight: 20, Complexity: "hard5" },
@@ -32,7 +29,7 @@ func CreateWorkoutTable() error {
 	}
 	gormDBConnect.Create(&Custs1)
 
-	//log.Printf("Workout table created, %s", result.Error())
+	log.Printf("Workout table populated")
 	return nil
 }
 
@@ -112,5 +109,26 @@ func CreateWorkout(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{
 		"status":  http.StatusCreated,
 		"message": "Workout created Successfully",
+	})
+}
+
+
+func DeleteWorkout(c *gin.Context) {
+	workoutId := c.Param("workoutId")
+	workout := &Workout{}
+
+	result := gormDBConnect.Delete(workout, workoutId)
+
+	if result.Error != nil {
+		log.Printf("Error while deleting a single workout, Reason: %v\n", result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": "Something went wrong",
+		})
+	return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "Workout deleted successfully",
 	})
 }
