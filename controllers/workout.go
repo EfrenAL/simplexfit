@@ -1,31 +1,28 @@
 package controllers
 
 import (
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"time"
-
-	"gorm.io/gorm"
-
-	"github.com/gin-gonic/gin"
 )
-
 
 type Workout struct {
 	gorm.Model
-	Name 			string `json:"name"`
-	Date 			time.Time  `json:"date"`
+	Name string    `json:"name"`
+	Date time.Time `json:"date"`
 	//Excercises 		Exercise  `json:"excercises" gorm:"ForeignKey:ExerciseID;references:ID"`
-	Exercises 		[]Exercise  `json:"excercises" gorm:"many2many:workout_exercise;"`	
-	ExerciseID		uint		`json:"-"`	
+	Exercises  []Exercise `json:"excercises" gorm:"many2many:workout_exercise;"`
+	ExerciseID uint       `json:"-"`
 }
 
 // Create User Table
 func PopulateWorkoutTable() error {
 
 	Custs1 := Workout{Name: "WOD Xfit Amsterdam", Exercises: []Exercise{
-		{Name: "Flexiones",Repetitions: 10, Weight: 20, Complexity: "hard5" },
-		{Name: "Abs",Repetitions: 10, Weight: 20, Complexity: "hard5" }},
+		{Name: "Flexiones", Repetitions: 10, Weight: 20, Complexity: "hard5"},
+		{Name: "Abs", Repetitions: 10, Weight: 20, Complexity: "hard5"}},
 	}
 	gormDBConnect.Create(&Custs1)
 
@@ -33,12 +30,10 @@ func PopulateWorkoutTable() error {
 	return nil
 }
 
-
-
 func GetAllWorkout(c *gin.Context) {
 	var workout []Workout
-	
-	result := gormDBConnect.Preload("Exercises").Find(&workout)									
+
+	result := gormDBConnect.Preload("Exercises").Find(&workout)
 
 	if result.Error != nil {
 		log.Printf("Error while getting all workout, Reason: %v\n", result.Error)
@@ -52,19 +47,19 @@ func GetAllWorkout(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": message ,
-		"data": workout,
-	})	
+		"message": message,
+		"data":    workout,
+	})
 }
 
 func GetSingleWorkout(c *gin.Context) {
 	workoutId := c.Param("workoutId")
-	exercise := &Workout{}
-	
-	result := gormDBConnect.First(&exercise, workoutId)
-	
+	workout := &Workout{}
+
+	result := gormDBConnect.First(&workout, workoutId)
+
 	if result.Error != nil {
-		log.Printf("Error while getting a single todo, Reason: %v\n", result.Error)
+		log.Printf("Error while getting a single workout, Reason: %v\n", result.Error)
 		c.JSON(http.StatusNotFound, gin.H{
 			"status":  http.StatusNotFound,
 			"message": "Exercise not found",
@@ -73,13 +68,10 @@ func GetSingleWorkout(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": "Single Exercise",
-		"data": exercise,
+		"message": "Single Workout",
+		"data":    workout,
 	})
 }
-
-
-
 
 func CreateWorkout(c *gin.Context) {
 
@@ -89,12 +81,12 @@ func CreateWorkout(c *gin.Context) {
 
 	name := workout.Name
 	date := workout.Date
-	excercises := workout.Exercises	
+	excercises := workout.Exercises
 
-	result := gormDBConnect.Create(&Workout{	
-		Name: name,
-		Date: date,
-		Exercises: excercises,		
+	result := gormDBConnect.Create(&Workout{
+		Name:      name,
+		Date:      date,
+		Exercises: excercises,
 	})
 
 	if result.Error != nil {
@@ -112,7 +104,6 @@ func CreateWorkout(c *gin.Context) {
 	})
 }
 
-
 func DeleteWorkout(c *gin.Context) {
 	workoutId := c.Param("workoutId")
 	workout := &Workout{}
@@ -125,7 +116,7 @@ func DeleteWorkout(c *gin.Context) {
 			"status":  http.StatusInternalServerError,
 			"message": "Something went wrong",
 		})
-	return
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
