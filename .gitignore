@@ -2,3 +2,5 @@
 .docker_build/
 bin/
 simplexfit
+crossfit-ff782-firebase-adminsdk-p2fbw-163a1c11a0.json
+vendor/
