@@ -18,7 +18,7 @@ type User struct {
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Weight    int       `json:"weight"`
-	Height    int       `json:"hheight"`
+	Height    int       `json:"height"`
 	Workouts  []Workout `json:"workouts" gorm:"many2many:user_workout;"`
 	WorkoutID uint      `json:"-"`
 }
@@ -172,10 +172,10 @@ func UpdateUser(ctx *gin.Context) {
 
 	var userBody User
 	ctx.BindJSON(&userBody)
+	log.Printf("User  ID: %v\n", userBody.ID)
 
 	user := &User{}
-	userId := ctx.Param("userId")
-	result := gormDBConnect.First(&user, userId)
+	result := gormDBConnect.First(&user, "ID = ?", userBody.ID)
 
 	if result.Error != nil {
 		log.Printf("Error while getting a single user, Reason: %v\n", result.Error)
@@ -195,6 +195,28 @@ func UpdateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
 		"message": "User updated",
+		"data":    user,
+	})
+}
+
+func GetAllUsers(c *gin.Context) {
+	var user []User
+
+	result := gormDBConnect.Find(&user)
+
+	if result.Error != nil {
+		log.Printf("Error while getting all users, Reason: %v\n", result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": "Something went wrong",
+		})
+		return
+	}
+	message := "All users %s" + string(result.RowsAffected)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": message,
 		"data":    user,
 	})
 }

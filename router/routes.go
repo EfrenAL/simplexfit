@@ -23,6 +23,8 @@ func Routes(router *gin.Engine) {
 	router.DELETE("/workout/:workoutId", JWTAuthMiddleware(), controllers.DeleteWorkout)
 	//User
 	router.GET("/user", JWTAuthMiddleware(), controllers.GetUserController)
+	router.GET("/users", JWTAuthMiddleware(), controllers.GetAllUsers)
+	router.PUT("/user", JWTAuthMiddleware(), controllers.UpdateUser)
 
 }
 
